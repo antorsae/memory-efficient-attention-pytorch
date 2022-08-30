@@ -25,8 +25,8 @@ def test_output_equal():
     x = torch.randn(2, 2048, 512)
     mask = torch.ones(2, 2048).bool()
 
-    out = attn(x, mask = mask)
-    mem_efficient_out = attn(x, mask = mask, memory_efficient = True)
+    out = attn(x, mask = mask)[0]
+    mem_efficient_out = attn(x, mask = mask, memory_efficient = True)[0]
 
     assert isclose(mem_efficient_out, out, atol = 1e-6)
 
@@ -43,7 +43,7 @@ def test_gradients_equal():
     )
 
     def loss_fn(inp, **kwargs):
-        return attn(inp, **kwargs).sum()
+        return attn(inp, **kwargs)[0].sum()
 
     x = torch.randn(2, 2048, 512).requires_grad_()
     mask = torch.ones(2, 2048).bool()
@@ -79,7 +79,7 @@ def test_flash_attn_output_equal():
     x = torch.randn(2, 2048, 512)
     mask = torch.ones(2, 2048).bool()
 
-    out = attn(x, mask = mask)
+    out = attn(x, mask = mask)[0]
     mem_efficient_out = flash_attn(x, mask = mask)
 
     assert isclose(mem_efficient_out, out, atol = 1e-6)

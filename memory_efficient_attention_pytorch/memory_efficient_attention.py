@@ -168,11 +168,12 @@ class Attention(nn.Module):
         dim_head = 64,
         dropout = 0.,
         causal = False,
-        memory_efficient = False,
+        memory_efficient = True,
         q_bucket_size = 512,
         k_bucket_size = 1024
     ):
         super().__init__()
+        print("HELLO")
         self.heads = heads
         self.causal = causal
 
@@ -197,6 +198,7 @@ class Attention(nn.Module):
         memory_efficient = None,
         q_bucket_size = None,
         k_bucket_size = None,
+        **kwargs
     ):
         memory_efficient = default(memory_efficient, self.memory_efficient)
         q_bucket_size = default(q_bucket_size, self.q_bucket_size)
@@ -215,4 +217,4 @@ class Attention(nn.Module):
         out = attn_fn(q, k, v, mask = mask, attn_bias = attn_bias, causal = self.causal, q_bucket_size = q_bucket_size, k_bucket_size = k_bucket_size)
 
         out = rearrange(out, 'b h n d -> b n (h d)')
-        return self.to_out(out)
+        return self.to_out(out),None
